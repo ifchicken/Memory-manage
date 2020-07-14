@@ -30,6 +30,8 @@ ChatBot::ChatBot(std::string filename)
     _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
 }
 
+// rule of five
+// 1 : destructor
 ChatBot::~ChatBot()
 {
     std::cout << "ChatBot Destructor" << std::endl;
@@ -44,6 +46,53 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+// 2 : copy constructor
+ChatBot::ChatBot(const ChatBot &source) {
+    std::cout << "ChatBot copy constructor" << std::endl;  
+    _image = source._image;
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;  
+}
+
+// 3 : copy assignment operator
+ChatBot& ChatBot::operator=(const ChatBot &source) {
+    std::cout << "ChatBot copy assignment operator" << std::endl;
+  	if (this == &source)
+      	return *this;
+  
+    _image = source._image;
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+  	return *this;
+}
+
+// 4 : move constructor
+ChatBot::ChatBot(ChatBot &&source) {
+    std::cout << "ChatBot move constructor" << std::endl;  
+    _image = source._image;
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+  
+    source._image = NULL;
+	source._chatLogic = nullptr;
+	source._rootNode = nullptr;
+}
+
+// 5 : move assignment operator
+ChatBot& ChatBot::operator=(ChatBot &&source) {
+    std::cout << "ChatBot move assignment operator" << std::endl;
+  	if (this == &source)
+      	return *this;
+  
+    _image = source._image;
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+  
+    source._image = NULL;
+	source._chatLogic = nullptr;
+	source._rootNode = nullptr;  
+  	return *this;
+}
 
 ////
 //// EOF STUDENT CODE
@@ -93,6 +142,7 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::uniform_int_distribution<int> dis(0, answers.size() - 1);
     std::string answer = answers.at(dis(generator));
 
+  	_chatLogic->SetChatbotHandle(this);
     // send selected node answer to user
     _chatLogic->SendMessageToUser(answer);
 }
